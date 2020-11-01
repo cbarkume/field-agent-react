@@ -50,25 +50,21 @@ public class AgentJdbcTemplateRepository implements AgentRepository {
 
     @Override
     public Agent add(Agent agent) {
-
         final String sql = "insert into agent (first_name, middle_name, last_name, dob, height_in_inches) "
                 + " values (?,?,?,?,?);";
-
         KeyHolder keyHolder = new GeneratedKeyHolder();
         int rowsAffected = jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, agent.getFirstName());
             ps.setString(2, agent.getMiddleName());
             ps.setString(3, agent.getLastName());
-            ps.setDate(4, Date.valueOf(agent.getDob()));
+            ps.setDate(4, agent.getDob() != null ? Date.valueOf(agent.getDob()) : null);
             ps.setInt(5, agent.getHeightInInches());
             return ps;
         }, keyHolder);
-
         if (rowsAffected <= 0) {
             return null;
         }
-
         agent.setAgentId(keyHolder.getKey().intValue());
         return agent;
     }

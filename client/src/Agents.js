@@ -5,7 +5,7 @@ class Agents extends React.Component {
         super();
         this.state = {
             agents: [],
-            id: 0,
+            agentId: 0,
             firstName: '',
             middleName: '',
             lastName: '',
@@ -19,9 +19,10 @@ class Agents extends React.Component {
         fetch('http://localhost:8080/api/agent')
         .then(response => response.json())
         .then(data => {
+            console.log(data)
             this.setState({
                 agents: data,
-                id: 0,
+                agentId: 0,
                 firstName: '',
                 middleName: '',
                 lastName: '',
@@ -102,19 +103,82 @@ class Agents extends React.Component {
     handleDelete = (agentId) => {
         console.log(agentId);
 
-        //This is a format string in js
         fetch(`http://localhost:8080/api/agent/${agentId}`, {
-            //This is all you need to delete. no body, no nothing
             method: 'DELETE'
         })
         .then(response => {
             if (response.status === 204) {
                 console.log('Success!');
-                this.getToDos();
+                this.getAgents();
             } else {
                 console.log('Oops! Reason: ' + response);
             }
         });   
+    }
+
+    handleEdit = (agentId) => {
+        console.log(agentId);
+
+        fetch(`http://localhost:8080/api/agent/${agentId}`) 
+            .then(response => response.json())
+            .then(({ agentId, firstName, middleName, lastName, dob, heightInInches }) => {
+                this.setState({
+                    agentId,
+                    firstName,
+                    middleName,
+                    lastName,
+                    dob,
+                    heightInInches,
+                    mode: 'Edit'
+                });
+            console.log(this.state);
+        });
+    }
+
+    handleEditSubmit = (event) => {
+        event.preventDefault();
+
+        const { agentId, firstName, middleName, lastName, dob, heightInInches } = this.state;
+
+        fetch(`http://localhost:8080/api/agent/${agentId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                agentId,
+                firstName,
+                middleName,
+                lastName,
+                dob,
+                heightInInches
+            })
+        })
+        .then(response => {
+            if (response.status === 204) {
+                console.log('Success!');
+                this.getAgents();
+            } else if (response.status === 400) {
+                console.log('Erros!');
+                response.json().then(data => {
+                    console.log(data);
+                });
+            } else {
+                console.log('Oops!');
+            }
+        })
+    }
+
+    cancelEditAgent = () => {
+        this.setState({
+            agentId: 0,
+            firstName: '',
+            middleName: '',
+            lastName: '',
+            dob: '',
+            heightInInches: 0,
+            mode: "Add"
+        });
     }
 
     render() {
@@ -139,16 +203,16 @@ class Agents extends React.Component {
                     </thead>
                     <tbody>
                         {this.state.agents.map(agent => (
-                            <tr key={agent.id}>
+                            <tr key={agent.agentId}>
                                 <td>{agent.firstName}</td>
                                 <td>{agent.middleName === "" ? "N/A" : agent.middleName}</td>
                                 <td>{agent.lastName}</td>
-                                <td>{agent.dob === null ? "N/A" : agent.dob}</td>
+                                <td>{agent.dob === "" ? "N/A" : agent.dob}</td>
                                 <td>{agent.heightInInches}</td>
                                 <td>
                                     <div className='float-right'>
-                                        <button className="btn btn-primary btn-sm mr-2" value={agent} type="button">Edit</button>
-                                        <button className="btn btn-danger btn-sm" value={agent.firstName} onClick={() => this.handleDelete(agent.id)} type="button">Delete</button>
+                                        <button className="btn btn-primary btn-sm mr-2" value={agent.agentId} onClick={() => this.handleEdit(agent.agentId)} type="button">Edit</button>
+                                        <button className="btn btn-danger btn-sm" value={agent.agentId} onClick={() => this.handleDelete(agent.agentId)} type="button">Delete</button>
                                     </div>
                                 </td>
                             </tr>
@@ -156,11 +220,42 @@ class Agents extends React.Component {
                     </tbody>
                 </table>
 
+                <h2>Add New Agent:</h2>
+
                 <div>
                     {mode === 'Add' && (
-                        <form onSubmit={this.handleAddSubmit}>
+                        <form className="form-inline" onSubmit={this.handleAddSubmit}>
+                            <div className="form-group m-2">
+                                <label htmlFor="firstName">First Name:&nbsp;</label>
+                                <input className="form-control col-12" value={this.state.firstName} onChange={this.handleFirstNameChange} 
+                                type="text" placeholder="Please provide a First Name." />
+                                <p></p>
+                                <label htmlFor="middleName">Middle Name:&nbsp;</label>
+                                <input className="form-control col-12" value={this.state.middleName} onChange={this.handleMiddleNameChange} 
+                                type="text" />
+                                <p></p>
+                                <label htmlFor="lastName">Last Name:&nbsp;</label>
+                                <input className="form-control col-12" value={this.state.lastName} onChange={this.handleLastNameChange} 
+                                type="text" placeholder="Please provide a Last Name." />
+                                <p></p>
+                                <label htmlFor="dob">Date of Birth:&nbsp;</label>
+                                <input className="form-control col-12" value={this.state.dob} onChange={this.handleDateOfBirthChange} 
+                                type="text" />
+                                <p></p>
+                                <label htmlFor="heightInInches">Height In Inches:&nbsp;</label>
+                                <input className="form-control col-12" value={this.state.heightInInches} onChange={this.handleHeightInInchesChange} 
+                                type="text" placeholder="Please provide a Height in Inches." />
+                                <p></p>
+                                <div>
+                                    <button className="btn btn-success ml-1" type="submit">Submit Form</button>
+                                </div>
+                            </div>
+                        </form>
+                    )}
+                    {mode === 'Edit' && (
+                        <form onSubmit={this.handleEditSubmit}>
                             <hr></hr>
-                            <h4>Add New Agent:</h4>
+                            <h4>Edit Agent:</h4>
                             <label htmlFor="firstName">First Name:&nbsp;</label>
                             <input value={this.state.firstName} onChange={this.handleFirstNameChange} type="text" />
                             <p></p>
@@ -178,6 +273,9 @@ class Agents extends React.Component {
                             <p></p>
                             <div>
                                 <button type="submit">Submit Form</button>
+                            </div>
+                            <div>
+                                <button onClick={this.cancelEditAgent} type="button">Cancel</button>
                             </div>
                         </form>
                     )}

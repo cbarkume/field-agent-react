@@ -188,11 +188,16 @@ class Agents extends React.Component {
 
         return (
             <>
-                <h2>Agents</h2>
+                <blockquote class="blockquote text-center">
+                    <hr></hr>
+                    <h1><p class="mb-0">Agents:</p></h1>
+                    <hr></hr>
+                </blockquote>
 
-                <table className="table table-dark table-striped table-hover">
-                    <thead>
+                <table className="table table-striped table-hover">
+                    <thead class="thead-dark">
                         <tr>
+                        <th scope="col">ID Number</th>
                         <th scope="col">First Name</th>
                         <th scope="col">Middle Name</th>
                         <th scope="col">Last Name</th>
@@ -204,10 +209,11 @@ class Agents extends React.Component {
                     <tbody>
                         {this.state.agents.map(agent => (
                             <tr key={agent.agentId}>
+                                <td>{agent.agentId}</td>
                                 <td>{agent.firstName}</td>
                                 <td>{agent.middleName === "" ? "N/A" : agent.middleName}</td>
                                 <td>{agent.lastName}</td>
-                                <td>{agent.dob === "" ? "N/A" : agent.dob}</td>
+                                <td>{agent.dob === null ? "N/A" : agent.dob}</td>
                                 <td>{agent.heightInInches}</td>
                                 <td>
                                     <div className='float-right'>
@@ -219,66 +225,91 @@ class Agents extends React.Component {
                         ))}
                     </tbody>
                 </table>
-
-                <h2>Add New Agent:</h2>
-
                 <div>
                     {mode === 'Add' && (
-                        <form className="form-inline" onSubmit={this.handleAddSubmit}>
-                            <div className="form-group m-2">
-                                <label htmlFor="firstName">First Name:&nbsp;</label>
-                                <input className="form-control col-12" value={this.state.firstName} onChange={this.handleFirstNameChange} 
-                                type="text" placeholder="Please provide a First Name." />
-                                <p></p>
-                                <label htmlFor="middleName">Middle Name:&nbsp;</label>
-                                <input className="form-control col-12" value={this.state.middleName} onChange={this.handleMiddleNameChange} 
-                                type="text" />
-                                <p></p>
-                                <label htmlFor="lastName">Last Name:&nbsp;</label>
-                                <input className="form-control col-12" value={this.state.lastName} onChange={this.handleLastNameChange} 
-                                type="text" placeholder="Please provide a Last Name." />
-                                <p></p>
-                                <label htmlFor="dob">Date of Birth:&nbsp;</label>
-                                <input className="form-control col-12" value={this.state.dob} onChange={this.handleDateOfBirthChange} 
-                                type="text" />
-                                <p></p>
-                                <label htmlFor="heightInInches">Height In Inches:&nbsp;</label>
-                                <input className="form-control col-12" value={this.state.heightInInches} onChange={this.handleHeightInInchesChange} 
-                                type="text" placeholder="Please provide a Height in Inches." />
-                                <p></p>
-                                <div>
-                                    <button className="btn btn-success ml-1" type="submit">Submit Form</button>
+                        <form onSubmit={this.handleAddSubmit}>
+                            <blockquote class="blockquote text-center">
+                                <h3><p class="mb-0">Add New Agent</p></h3>
+                                <hr></hr>
+                            </blockquote>
+                            <div class="form-row">
+                                <div class="form-group col-md-4">
+                                    <label htmlFor="firstName">First Name:&nbsp;</label>
+                                    <input className="form-control col-12" value={this.state.firstName} onChange={this.handleFirstNameChange} 
+                                    type="text" placeholder="First Name" />
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label htmlFor="middleName">Middle Name:&nbsp;</label>
+                                    <input className="form-control col-12" value={this.state.middleName} onChange={this.handleMiddleNameChange} 
+                                    type="text" placeholder="Middle Name" />
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label htmlFor="lastName">Last Name:&nbsp;</label>
+                                    <input className="form-control col-12" value={this.state.lastName} onChange={this.handleLastNameChange} 
+                                    type="text" placeholder="Last Name" />
                                 </div>
                             </div>
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label htmlFor="dob">Date of Birth:&nbsp;</label>
+                                    <input className="form-control col-12" value={this.state.dob} onChange={this.handleDateOfBirthChange} 
+                                    type="text" placeholder="Date of Birth (yyyy-mm-dd)" />
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label htmlFor="heightInInches">Height In Inches:&nbsp;</label>
+                                    <input className="form-control col-12" value={this.state.heightInInches} onChange={this.handleHeightInInchesChange} 
+                                    type="text" placeholder="Height (Inches)" />
+                                </div>
+                            </div>
+                             <button className="btn btn-success ml-1" type="submit">Add Agent</button>
                         </form>
                     )}
                     {mode === 'Edit' && (
                         <form onSubmit={this.handleEditSubmit}>
-                            <hr></hr>
-                            <h4>Edit Agent:</h4>
-                            <label htmlFor="firstName">First Name:&nbsp;</label>
-                            <input value={this.state.firstName} onChange={this.handleFirstNameChange} type="text" />
-                            <p></p>
-                            <label htmlFor="middleName">Middle Name:&nbsp;</label>
-                            <input value={this.state.middleName} onChange={this.handleMiddleNameChange} type="text" />
-                            <p></p>
-                            <label htmlFor="lastName">Last Name:&nbsp;</label>
-                            <input value={this.state.lastName} onChange={this.handleLastNameChange} type="text" />
-                            <p></p>
-                            <label htmlFor="dob">Date of Birth:&nbsp;</label>
-                            <input value={this.state.dob} onChange={this.handleDateOfBirthChange} type="text" />
-                            <p></p>
-                            <label htmlFor="heightInInches">Height In Inches:&nbsp;</label>
-                            <input value={this.state.heightInInches} onChange={this.handleHeightInInchesChange} type="text" />
-                            <p></p>
-                            <div>
-                                <button type="submit">Submit Form</button>
+                            <blockquote class="blockquote text-center">
+                                <h3><p class="mb-0">Edit Agent</p></h3>
+                                <hr></hr>
+                            </blockquote>
+                            <div className="form-row">
+                                <div className="form-group col">
+                                    <label htmlFor="agentId">ID Number:&nbsp;</label>
+                                    <input className="form-control col-12" type="text" placeholder={this.state.agentId} readOnly />
+                                </div>
                             </div>
-                            <div>
-                                <button onClick={this.cancelEditAgent} type="button">Cancel</button>
+                            <div className="form-row">
+                                <div className="form-group col">
+                                    <label htmlFor="firstName">First Name:&nbsp;</label>
+                                    <input className="form-control col-12" value={this.state.firstName} onChange={this.handleFirstNameChange} 
+                                    type="text" placeholder="First Name" />
+                                </div>
+                                <div className="form-group col">
+                                    <label htmlFor="middleName">Middle Name:&nbsp;</label>
+                                    <input className="form-control col-12" value={this.state.middleName} onChange={this.handleMiddleNameChange} 
+                                    type="text" placeholder="Middle Name" />
+                                </div>
+                                <div className="form-group col">
+                                    <label htmlFor="lastName">Last Name:&nbsp;</label>
+                                    <input className="form-control col-12" value={this.state.lastName} onChange={this.handleLastNameChange} 
+                                    type="text" placeholder="Last Name" />
+                                </div>
                             </div>
+                            <div className="form-row">
+                                <div className="form-group col">
+                                    <label htmlFor="dob">Date of Birth:&nbsp;</label>
+                                    <input className="form-control col-12" value={this.state.dob} onChange={this.handleDateOfBirthChange} 
+                                    type="text" placeholder="Date of Birth (yyyy-mm-dd)" />
+                                </div>
+                                <div className="form-group col">
+                                    <label htmlFor="heightInInches">Height In Inches:&nbsp;</label>
+                                    <input className="form-control col-12" value={this.state.heightInInches} onChange={this.handleHeightInInchesChange} 
+                                    type="text" placeholder="Height (Inches)" />
+                                </div>
+                            </div>
+                            <button className="btn btn-primary ml-1" type="submit">Edit Agent</button>
+                            <button className="btn btn-danger ml-1" onClick={this.cancelEditAgent} type="button">Cancel</button>
                         </form>
                     )}
+                    <hr></hr>
                 </div>
             </>
         );
